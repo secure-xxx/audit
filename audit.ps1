@@ -4,13 +4,13 @@ $key = '###SECRET###';
 New-Item -ItemType directory -Force -Path $ENV:UserProfile\TMP
 echo "`n"
 echo "
-                                                        ###   ###
- ####   #####   #####   ###  ##  ######  #####           ### ###
- ##      ##      ##  ##  ##  ##   ##  ##  ##              #####
-  ####   ####    ##      ##  ##   #####   ####   #####     ###
-     ##  ##      ##  ##  ##  ##   ##  ##  ##              #####
-  ####   #####    ####    ####    ##  ##  #####          ### ###
-                                                        ###   ###"
+                                                        xxx   xxx
+ xxxx   xxxxx   xxxxx   xxx  xx  xxxxxx  xxxxx           xxx xxx
+ xx      xx      xx  xx  xx  xx   xx  xx  xx              xxxxx
+  xxxx   xxxx    xx      xx  xx   xxxxx   xxxx   xxxxx     xxx
+     xx  xx      xx  xx  xx  xx   xx  xx  xx              xxxxx
+  xxxx   xxxxx    xxxx    xxxx    xx  xx  xxxxx          xxx xxx
+                                                        xxx   xxx"
 echo "`n"
 echo "CREATING TEMPORARY FOLDER... `n"
 echo "COLLECTING MSINFO... `n"
