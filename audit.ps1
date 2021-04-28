@@ -18,7 +18,9 @@ msinfo32 /report $ENV:UserProfile\TMP\MSINFO.txt
 echo "COLLECTING SYSTEMINFO... `n"
 systeminfo > $ENV:UserProfile\TMP\SYSTEMINFO.txt
 echo "COLLECTING UPDATES... `n"
-$update = get-wmiobject -class win32_quickfixengineering | Out-File $ENV:UserProfile\TMP\UPDATES.txt
+Get-wmiobject -class win32_quickfixengineering | Out-File $ENV:UserProfile\TMP\UPDATES.txt
+echo "COLLECTING SOFTWARE... `n"
+Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion, Publisher, InstallDate | Format-Table –AutoSize > $ENV:UserProfile\TMP\SOFTWARE.txt
 echo "CHECKING OPEN PORTS... `n"
 Get-NetTCPConnection -State Listen | Select-Object -Property LocalAddress, LocalPort, RemoteAddress, RemotePort, State | Sort-Object LocalPort > $ENV:UserProfile\TMP\PORTS.txt
 echo "CHECKING ESTABILISHED CONNECTIONS... `n"
