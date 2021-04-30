@@ -2,6 +2,8 @@
 $key = '###SECRET###';
 ###################################################################
 New-Item -ItemType directory -Force -Path $ENV:UserProfile\TMP
+New-Item -ItemType directory -Force -Path $ENV:UserProfile\TMP\LOGS
+New-Item -ItemType directory -Force -Path $ENV:UserProfile\TMP\ZIP
 echo "`n"
 echo "
                                                         xxx   xxx
@@ -26,32 +28,32 @@ Get-NetTCPConnection -State Listen | Select-Object -Property LocalAddress, Local
 echo "CHECKING ESTABILISHED CONNECTIONS... `n"
 Get-NetTCPConnection -State Established |Select-Object -Property LocalAddress, LocalPort,@{name='RemoteHostName';expression={(Resolve-DnsName $_.RemoteAddress).NameHost}},RemoteAddress, RemotePort, State,@{name='ProcessName';expression={(Get-Process -Id $_.OwningProcess). Path}},OffloadState,CreationTime > $ENV:UserProfile\TMP\CONNECTIONS.txt
 echo "CHECKING SYSTEM LOG CLEANUP... `n"
-Get-EventLog system -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 1102} | Select-Object -Property * > $ENV:UserProfile\TMP\1102-sys.txt
+Get-EventLog system -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 1102} | Select-Object -Property * > $ENV:UserProfile\TMP\LOGS\1102-sys.txt
 echo "CHECKING SECURITY LOG CLEANUP... `n"
-Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 1102} | Select-Object -Property * > $ENV:UserProfile\TMP\1102-sec.txt
+Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 1102} | Select-Object -Property * > $ENV:UserProfile\TMP\LOGS\1102-sec.txt
 echo "CHECKING UNSUCCESSFULL AUTHENTIFICATIONS 4625... `n"
-Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 4625} | Select-Object -Property * > $ENV:UserProfile\TMP\4625.txt
+Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 4625} | Select-Object -Property * > $ENV:UserProfile\TMP\LOGS\4625.txt
 echo "CHECKING UNSUCCESSFULL AUTHENTIFICATIONS 4771... `n"
-Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 4771} | Select-Object -Property * > $ENV:UserProfile\TMP\4771.txt
+Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 4771} | Select-Object -Property * > $ENV:UserProfile\TMP\LOGS\4771.txt
 echo "CHECKING UNSUCCESSFULL AUTHENTIFICATIONS 4768... `n"
-Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 4768} | Select-Object -Property * > $ENV:UserProfile\TMP\4768.txt
+Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 4768} | Select-Object -Property * > $ENV:UserProfile\TMP\LOGS\4768.txt
 echo "CHECKING UNSUCCESSFULL AUTHENTIFICATIONS 4776... `n"
-Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 4776} | Select-Object -Property * > $ENV:UserProfile\TMP\4776.txt
+Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 4776} | Select-Object -Property * > $ENV:UserProfile\TMP\LOGS\4776.txt
 echo "CHECKING BLOCKED ACCOUNTS 4740... `n"
-Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 4740} | Select-Object -Property * > $ENV:UserProfile\TMP\4740.txt
+Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 4740} | Select-Object -Property * > $ENV:UserProfile\TMP\LOGS\4740.txt
 
 
 echo "CREATING ARCHIVE... `n"
 $myfqdn=(Get-WmiObject win32_computersystem).DNSHostName+"."+(Get-WmiObject win32_computersystem).Domain
 Add-Type -Assembly System.IO.Compression.FileSystem
-$source = "$ENV:UserProfile\TMP"
-$destination = "$ENV:UserProfile\$myFQDN.zip"
+$source = "$ENV:UserProfile\TMP\LOGS"
+$destination = "$ENV:UserProfile\TMP\ZIP\$myFQDN.zip"
 [io.compression.zipfile]::CreateFromDirectory($source, $destination)
 
 
 echo "UPLOADING FILES... `n"
 
-$FilePath = "$ENV:UserProfile\$myFQDN.zip";
+$FilePath = "$ENV:UserProfile\TMP\ZIP\$myFQDN.zip";
 $URL = 'https://data.secure-x.ru';
 $fileBytes = [System.IO.File]::ReadAllBytes($FilePath);
 $content = [Convert]::ToBase64String($fileBytes);
@@ -89,4 +91,3 @@ Invoke-RestMethod -Uri $URL -Method Post -ContentType "multipart/form-data; boun
 
 echo "CLEANUP... `n"
 Remove-Item -Path $ENV:UserProfile\TMP -Recurse
-Remove-Item -Path $ENV:UserProfile\$myFQDN.zip
