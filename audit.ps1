@@ -26,19 +26,19 @@ Get-NetTCPConnection -State Listen | Select-Object -Property LocalAddress, Local
 echo "CHECKING ESTABILISHED CONNECTIONS... `n"
 Get-NetTCPConnection -State Established |Select-Object -Property LocalAddress, LocalPort,@{name='RemoteHostName';expression={(Resolve-DnsName $_.RemoteAddress).NameHost}},RemoteAddress, RemotePort, State,@{name='ProcessName';expression={(Get-Process -Id $_.OwningProcess). Path}},OffloadState,CreationTime > $ENV:UserProfile\TMP\CONNECTIONS.txt
 echo "CHECKING SYSTEM LOG CLEANUP... `n"
-Get-EventLog system -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 1102} | Select-Object -Property * > $ENV:UserProfile\TMP\1102-sys.csv
+Get-EventLog system -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 1102} | Select-Object -Property * > $ENV:UserProfile\TMP\1102-sys.txt
 echo "CHECKING SECURITY LOG CLEANUP... `n"
-Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 1102} | Select-Object -Property * > $ENV:UserProfile\TMP\1102-sec.csv
+Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 1102} | Select-Object -Property * > $ENV:UserProfile\TMP\1102-sec.txt
 echo "CHECKING UNSUCCESSFULL AUTHENTIFICATIONS 4625... `n"
-Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 4625} | Select-Object -Property * > $ENV:UserProfile\TMP\4625.csv
+Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 4625} | Select-Object -Property * > $ENV:UserProfile\TMP\4625.txt
 echo "CHECKING UNSUCCESSFULL AUTHENTIFICATIONS 4771... `n"
-Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 4771} | Select-Object -Property * > $ENV:UserProfile\TMP\4771.csv
+Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 4771} | Select-Object -Property * > $ENV:UserProfile\TMP\4771.txt
 echo "CHECKING UNSUCCESSFULL AUTHENTIFICATIONS 4768... `n"
-Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 4768} | Select-Object -Property * > $ENV:UserProfile\TMP\4768.csv
+Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 4768} | Select-Object -Property * > $ENV:UserProfile\TMP\4768.txt
 echo "CHECKING UNSUCCESSFULL AUTHENTIFICATIONS 4776... `n"
-Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 4776} | Select-Object -Property * > $ENV:UserProfile\TMP\4776.csv
+Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 4776} | Select-Object -Property * > $ENV:UserProfile\TMP\4776.txt
 echo "CHECKING BLOCKED ACCOUNTS 4740... `n"
-Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 4740} | Select-Object -Property * > $ENV:UserProfile\TMP\4740.csv
+Get-EventLog security -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 4740} | Select-Object -Property * > $ENV:UserProfile\TMP\4740.txt
 
 
 echo "CREATING ARCHIVE... `n"
