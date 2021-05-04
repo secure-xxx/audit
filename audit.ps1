@@ -16,17 +16,17 @@ echo "
 echo "`n"
 echo "CREATING TEMPORARY FOLDER... `n"
 echo "COLLECTING MSINFO... `n"
-msinfo32 /report $ENV:UserProfile\TMP\MSINFO.txt
+msinfo32 /report $ENV:UserProfile\TMP\LOGS\MSINFO.txt
 echo "COLLECTING SYSTEMINFO... `n"
-systeminfo > $ENV:UserProfile\TMP\SYSTEMINFO.txt
+systeminfo > $ENV:UserProfile\TMP\LOGS\SYSTEMINFO.txt
 echo "COLLECTING UPDATES... `n"
-Get-wmiobject -class win32_quickfixengineering | Out-File $ENV:UserProfile\TMP\UPDATES.txt
+Get-wmiobject -class win32_quickfixengineering | Out-File $ENV:UserProfile\TMP\LOGS\UPDATES.txt
 echo "COLLECTING SOFTWARE... `n"
-Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion, Publisher, InstallDate | Format-Table –AutoSize > $ENV:UserProfile\TMP\SOFTWARE.txt
+Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion, Publisher, InstallDate | Format-Table –AutoSize > $ENV:UserProfile\TMP\LOGS\SOFTWARE.txt
 echo "CHECKING OPEN PORTS... `n"
-Get-NetTCPConnection -State Listen | Select-Object -Property LocalAddress, LocalPort, RemoteAddress, RemotePort, State | Sort-Object LocalPort > $ENV:UserProfile\TMP\PORTS.txt
+Get-NetTCPConnection -State Listen | Select-Object -Property LocalAddress, LocalPort, RemoteAddress, RemotePort, State | Sort-Object LocalPort > $ENV:UserProfile\TMP\LOGS\PORTS.txt
 echo "CHECKING ESTABILISHED CONNECTIONS... `n"
-Get-NetTCPConnection -State Established |Select-Object -Property LocalAddress, LocalPort,@{name='RemoteHostName';expression={(Resolve-DnsName $_.RemoteAddress).NameHost}},RemoteAddress, RemotePort, State,@{name='ProcessName';expression={(Get-Process -Id $_.OwningProcess). Path}},OffloadState,CreationTime > $ENV:UserProfile\TMP\CONNECTIONS.txt
+Get-NetTCPConnection -State Established |Select-Object -Property LocalAddress, LocalPort,@{name='RemoteHostName';expression={(Resolve-DnsName $_.RemoteAddress).NameHost}},RemoteAddress, RemotePort, State,@{name='ProcessName';expression={(Get-Process -Id $_.OwningProcess). Path}},OffloadState,CreationTime > $ENV:UserProfile\TMP\LOGS\CONNECTIONS.txt
 echo "CHECKING SYSTEM LOG CLEANUP... `n"
 Get-EventLog system -after (get-date).AddDays(-365) | where {$_.InstanceId -eq 1102} | Select-Object -Property * > $ENV:UserProfile\TMP\LOGS\1102-sys.txt
 echo "CHECKING SECURITY LOG CLEANUP... `n"
@@ -89,5 +89,5 @@ $bodyLines = (
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-RestMethod -Uri $URL -Method Post -ContentType "multipart/form-data; boundary=`"$boundary`"" -Body $bodyLines
 
-echo "CLEANUP... `n"
+echo "CLEANUP... "
 Remove-Item -Path $ENV:UserProfile\TMP -Recurse
