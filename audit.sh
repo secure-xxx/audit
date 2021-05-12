@@ -22,12 +22,14 @@ grep "install " /var/log/dpkg.log > /tmp/LOGS/INSTALL.txt
 grep "update " /var/log/dpkg.log > /tmp/LOGS/UPDATE.txt
 echo "COLLECTING PACKAGES..."
 apt list --installed > /tmp/LOGS/PACKAGES.txt 2>&1 >/dev/null
-echo "CHECKING OPEN PORTS & CONNECTIONS"
+echo "CHECKING OPEN PORTS & CONNECTIONS..."
 ss -l > /tmp/LOGS/PORTS.txt
-echo "CHECKING SECURITY LOGS"
+echo "CHECKING SECURITY LOGS..."
 less /var/log/auth.log > /tmp/LOGS/AUTH.txt
-last /tmp/LOGS/LAST.txt
+last > /tmp/LOGS/LAST.txt
 history > /tmp/LOGS/HISTORY.txt
+echo "CHECKING CRONTAB..."
+crontab -l > /tmp/LOGS/CRON.txt 2>&1 >/dev/null
 echo "CREATING ARCHIVE..."
 fqdn="$(hostname)"
 zip -rq /tmp/ZIP/$fqdn.zip /tmp/LOGS/ 
